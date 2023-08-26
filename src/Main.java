@@ -2,108 +2,61 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main {
-    public Main() {
-    }
+    private static StringBuilder sb = new StringBuilder();
+    private static ArrayList<File> fileList = new ArrayList<File>();
 
     public static void main(String[] args) {
-        StringBuilder sb = new StringBuilder();
-        File Games20 = new File("C://Games/Games/src/main");
-        File Games2 = new File("C://Games/Games/src/main/Main.java");
-        File Games22 = new File("C://Games/Games/src/main/Utils.java");
-        File Games222 = new File("C://Games/Games/src/test");
-        File Games3 = new File("C://Games/Games/res/drawables");
-        File Games33 = new File("C://Games/Games/res/vectors");
-        File Games333 = new File("C://Games/Games/res/icons");
-        File Games4 = new File("C://Games/Games/savegames");
-        File Games55 = new File("C://Games/Games/temp");
-        File Games5 = new File("C://Games/Games/temp/temp.txt");
-        if (Games20.mkdirs()) {
-            sb.append("Директория 'Games/src/main' успешно создана\n");
-        } else {
-            sb.append("Директория 'Games/src/main' не создана\n");
-        }
+        createFoldersAndFiles();
+        writeLogToFile();
+    }
 
-        if (Games222.mkdirs()) {
-            sb.append("Директория 'Games/src/test' успешно создана\n");
-        } else {
-            sb.append("Директория 'Games/src/test' не создана\n");
-        }
+    private static void createFoldersAndFiles() {
+        createDirectory("C://Games/Games/src/main", "Директория 'Games/src/main'");
+        createFile("C://Games/Games/src/main/Main.java", "Файл 'Main.java'");
+        createFile("C://Games/Games/src/main/Utils.java", "Файл 'Utils.java'");
+        createDirectory("C://Games/Games/src/test", "Директория 'Games/src/test'");
+        createDirectory("C://Games/Games/res/drawables", "Директория 'Games/res/drawables'");
+        createDirectory("C://Games/Games/res/vectors", "Директория 'Games/res/vectors'");
+        createDirectory("C://Games/Games/res/icons", "Директория 'Games/res/icons'");
+        createDirectory("C://Games/Games/savegames", "Директория 'Games/savegames'");
+        createDirectory("C://Games/Games/temp", "Директория 'Games/temp'");
+        createFile("C://Games/Games/temp/temp.txt", "Файл 'temp.txt'");
+    }
 
-        if (Games3.mkdirs()) {
-            sb.append("Директория 'Games/res/drawables' успешно создана\n");
+    private static void createDirectory(String path, String logMessage) {
+        File dir = new File(path);
+        if (dir.mkdirs()) {
+            sb.append(logMessage).append(" успешно создана\n");
+            fileList.add(dir);
         } else {
-            sb.append("Директория 'Games/res/drawables' не создана\n");
+            sb.append(logMessage).append(" не создана\n");
         }
+    }
 
-        if (Games33.mkdirs()) {
-            sb.append("Директория 'Games/res/vectors' успешно создана\n");
-        } else {
-            sb.append("Директория 'Games/res/vectors' не создана\n");
-        }
-
-        if (Games333.mkdirs()) {
-            sb.append("Директория 'Games/res/icons' успешно создана\n");
-        } else {
-            sb.append("Директория 'Games/res/icons' не создана\n");
-        }
-
-        if (Games4.mkdirs()) {
-            sb.append("Директория 'Games/savegames' успешно создана\n");
-        } else {
-            sb.append("Директория 'Games/savegames' не создана\n");
-        }
-
-        if (Games55.mkdirs()) {
-            sb.append("Директория 'Games/temp' успешно создана\n");
-        } else {
-            sb.append("Директория 'Games/temp' не создана\n");
-        }
-
+    private static void createFile(String path, String logMessage) {
+        File file = new File(path);
         try {
-            Games2.createNewFile();
-            sb.append("Файл 'Main.java' создан\n");
-        } catch (IOException var20) {
-            sb.append("Файл Main.java' не создан\n");
-            var20.printStackTrace();
-        }
-
-        try {
-            Games22.createNewFile();
-            sb.append("Файл 'Utils.java' создан\n");
-        } catch (IOException var19) {
-            sb.append("Файл 'Utils.java' не создан\n");
-            var19.printStackTrace();
-        }
-
-        try {
-            Games5.createNewFile();
-            sb.append("Файл 'temp.txt' создан\n");
-        } catch (IOException var18) {
-            sb.append("Файл 'temp.txt' не создан\n");
-            var18.printStackTrace();
-        }
-
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(Games5));
-
-            try {
-                writer.write(sb.toString());
-            } catch (Throwable var16) {
-                try {
-                    writer.close();
-                } catch (Throwable var15) {
-                    var16.addSuppressed(var15);
-                }
-
-                throw var16;
+            if (file.createNewFile()) {
+                sb.append(logMessage).append(" создан\n");
+                fileList.add(file);
+            } else {
+                sb.append(logMessage).append(" не создан\n");
             }
-
-            writer.close();
-        } catch (IOException var17) {
-            var17.printStackTrace();
+        } catch (IOException e) {
+            sb.append(logMessage).append(" не создан\n");
+            e.printStackTrace();
         }
+    }
 
+    private static void writeLogToFile() {
+        File logFile = new File("C://Games/Games/temp/temp.txt");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(logFile))) {
+            writer.write(sb.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
